@@ -3,45 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Professional Services Platform</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Professional Services Platform</h1>
     <nav>
-      <a href="search.html">Search Professionals</a>
-      <a href="profile.html">My Profile</a>
-      <a href="admin.html">Admin Panel</a>
-      <a href="index.html">Sign Out</a>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="search.html">Search</a>
+      <a href="profile.html">Profile</a>
+      <a href="admin.html">Admin</a>
+      <a href="support.html">Support</a>
+      <a href="product.html">Products</a>
+      <button id="logoutBtn">Logout</button>
     </nav>
+    <h1>Professional Services Platform</h1>
   </header>
   <div class="container">
-    <h2>Welcome to Your Dashboard</h2>
-    <p>Choose your role or start searching for professionals.</p>
-    <div class="roles">
-      <div class="role-card">
-        <h3>User</h3>
-        <p>Search for professionals and hire services.</p>
-        <a href="search.html" class="btn">Go to Search</a>
-      </div>
-      <div class="role-card">
-        <h3>Professional</h3>
-        <p>Create your profile and list services.</p>
-        <a href="profile.html" class="btn">Manage Profile</a>
-      </div>
-      <div class="role-card">
-        <h3>Admin</h3>
-        <p>Manage platform settings and users.</p>
-        <a href="admin.html" class="btn">Admin Panel</a>
-      </div>
-      <div class="role-card">
-        <h3>Customer Support</h3>
-        <p>Assist users with inquiries.</p>
-        <a href="support.html" class="btn">Support Dashboard</a>
-      </div>
+    <h2 id="dashboardTitle">Welcome to Dashboard</h2>
+    <div id="roleContent">
+      <!-- Role-based content will be populated by JS -->
     </div>
   </div>
   <script src="script.js"></script>
+  <script>
+    // Inline script for dashboard specific logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const title = document.getElementById('dashboardTitle');
+      const content = document.getElementById('roleContent');
+      title.textContent = `Welcome, ${currentUser.name}! (${currentUser.role} Role)`;
+
+      let cards = '';
+      switch (currentUser.role) {
+        case 'User':
+          cards = `
+            <div class="dashboard-card" onclick="window.location.href='search.html'">
+              <h3>Search Professionals</h3>
+              <p>Find and hire services</p>
+            </div>
+            <div class="dashboard-card" onclick="window.location.href='profile.html'">
+              <h3>My Profile</h3>
+              <p>View and edit your info</p>
+            </div>
+            <div class="dashboard-card" onclick="alert('Provide feedback on past hires')">
+              <h3>Give Feedback</h3>
+              <p>Rate your experiences</p>
+            </div>
+          `;
+          break;
+        case 'Professional':
+          cards = `
+            <div class="dashboard-card" onclick="window.location.href='profile.html'">
+              <h3>Manage Profile</h3>
+              <p>Update your services and info</p>
+            </div>
+            <div class="dashboard-card" onclick="alert('View client requests and messages')">
+              <h3>Client Interactions</h3>
+              <p>Respond to hires and inquiries</p>
+            </div>
+            <div class="dashboard-card" onclick="alert('List new services')">
+              <h3>List Services</h3>
+              <p>Add or edit your offerings</p>
+            </div>
+          `;
+          break;
+        case 'Admin':
+          cards = `
+            <div class="dashboard-card" onclick="window.location.href='admin.html'">
+              <h3>Manage Users</h3>
+              <p>View and edit user roles</p>
+            </div>
+            <div class="dashboard-card" onclick="alert('Manage service listings')">
+              <h3>Manage Services</h3>
+              <p>Add or approve services</p>
+            </div>
+            <div class="dashboard-card" onclick="alert('Platform settings')">
+              <h3>Settings</h3>
+              <p>Configure platform options</p>
+            </div>
+          `;
+          break;
+        case 'Support':
+          cards = `
+            <div class="dashboard-card" onclick="window.location.href='support.html'">
+              <h3>View Inquiries</h3>
+              <p>Check user issues</p>
+            </div>
+            <div class="dashboard-card" onclick="alert('Resolve open tickets')">
+              <h3>Resolve Issues</h3>
+              <p>Handle support requests</p>
+            </div>
+            <div class="dashboard-card" onclick="alert('Escalate complex problems')">
+              <h3>Escalate</h3>
+              <p>Refer to admin if needed</p>
+            </div>
+          `;
+          break;
+        default:
+          cards = '<p>Invalid role. Please log in again.</p>';
+      }
+      content.innerHTML = cards;
+      checkLoginStatus(); // From script.js
+    });
+  </script>
 </body>
 </html>

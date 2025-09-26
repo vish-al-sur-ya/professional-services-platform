@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="search.html">Search</a>
+      <a href="profile.html">Profile</a>
+      <a href="admin.html">Admin</a>
+      <a href="support.html">Support</a>
+      <a href="product.html">Products</a>
+      <button id="logoutBtn">Logout</button>
+    </nav>
+    <h1>Professional Services Platform</h1>
+  </header>
+  <div class="container">
+    <h2>Admin Panel</h2>
+    
+    <section>
+      <h3>Manage Users</h3>
+      <table id="usersTable" class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+      <form id="addUserForm">
+        <input type="text" placeholder="Full Name" required>
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <select required>
+          <option value="">Select Role</option>
+          <option value="User">User</option>
+          <option value="Professional">Professional</option>
+          <option value="Admin">Admin</option>
+          <option value="Support">Customer Support</option>
+        </select>
+        <button type="submit">Add User</button>
+      </form>
+    </section>
+
+    <section>
+      <h3>Manage Services</h3>
+      <table id="servicesTable" class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+      <form id="addServiceForm">
+        <input type="text" placeholder="Service Name" required>
+        <input type="text" placeholder="Description" required>
+        <button type="submit">Add Service</button>
+      </form>
+    </section>
+  </div>
+  <script src="script.js"></script>
+  <script>
+    // Admin logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser || currentUser.role !== 'Admin') {
+        alert('Access restricted to Admin only.');
+        window.location.href = 'dashboard.html';
+        return;
+      }
+
+      loadUsers();
+      loadServices();
+
+      document.getElementById('addUserForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = this.querySelector('input[placeholder="Full Name"]').value;
+        const email = this.querySelector('input[placeholder="Email"]').value;
+        const password = this.querySelector('input[placeholder="Password"]').value;
+        const role = this.querySelector('select').value;
+
+        if (!name || !email || !password || !role) {
+          alert('Please fill all fields.');
+          return;
+        }
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        if (users.find(u => u.email === email)) {
+          alert('Email already exists.');
+          return;
+        }
+
+        const newUser = { name, email, password, role };
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+        loadUsers();
+        this.reset();
+        alert('User added successfully!');
+      });
+
+      document.getElementById('addServiceForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = this.querySelector('input[placeholder="Service Name"]').value;
+        const desc = this.querySelector('input[placeholder="Description"]').value;
+
+        if (!name || !desc) {
+          alert('Please fill all fields.');
+          return;
+        }
+
+        let services = JSON.parse(localStorage.getItem('services')) || services; // Use global or local
+        services.push({ name, description: desc });
+        localStorage.setItem('services', JSON.stringify(services));
+        loadServices();
+        this.reset();
+        alert('Service added successfully!');
+      });
+
+      function loadUsers() {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const tbody = document.querySelector('#usersTable tbody');
+        tbody.innerHTML = '';
+        users.forEach((user, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td>
+              <button onclick="editUser(${index})">Edit</button>
+              <button onclick="deleteUser(${index})">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function loadServices() {
+        let services = JSON.parse(localStorage.getItem('services')) || services;
+        const tbody = document.querySelector('#servicesTable tbody');
+        tbody.innerHTML = '';
+        services.forEach((service, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${service.name}</td>
+            <td>${service.description}</td>
+            <td>
+              <button onclick="deleteService(${index})">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      window.editUser = function(index) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users[index];
+        const newRole = prompt('New role:', user.role);
+        if (newRole && ['User', 'Professional', 'Admin', 'Support'].includes(newRole)) {
+          user.role = newRole;
+          localStorage.setItem('users', JSON.stringify(users));
+          loadUsers();
+          alert('User updated!');
+        }
+      };
+
+      window.deleteUser = function(index) {
+        if (confirm('Delete this user?')) {
+          let users = JSON.parse(localStorage.getItem('users')) || [];
+          users.splice(index, 1);
+          localStorage.setItem('users', JSON.stringify(users));
+          loadUsers();
+          alert('User deleted!');
+        }
+      };
+
+      window.deleteService = function(index) {
+        if (confirm('Delete this service?')) {
+          let services = JSON.parse(localStorage.getItem('services')) || services;
+          services.splice(index, 1);
+          localStorage.setItem('services', JSON.stringify(services));
+          loadServices();
+          alert('Service deleted!');
+        }
+      };
+
+      checkLoginStatus(); // From script.js
+    });
+  </script>
+</body>
+</html>

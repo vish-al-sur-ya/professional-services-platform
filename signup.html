@@ -8,13 +8,17 @@
 </head>
 <body>
   <header>
-    <h1>Professional Services Platform</h1>
     <nav>
+      <a href="index.html">Home</a>
       <a href="dashboard.html">Dashboard</a>
       <a href="search.html">Search</a>
       <a href="profile.html">Profile</a>
       <a href="admin.html">Admin</a>
+      <a href="support.html">Support</a>
+      <a href="product.html">Products</a>
+      <button id="logoutBtn" style="display:none;">Logout</button>
     </nav>
+    <h1>Professional Services Platform</h1>
   </header>
   <div class="container">
     <h2>Sign Up</h2>
@@ -23,6 +27,13 @@
       <input type="email" placeholder="Email" required>
       <input type="password" placeholder="Password" required>
       <input type="password" placeholder="Confirm Password" required>
+      <select id="role" required>
+        <option value="">Select Role</option>
+        <option value="User">User</option>
+        <option value="Professional">Professional</option>
+        <option value="Admin">Admin</option>
+        <option value="Support">Customer Support</option>
+      </select>
       <button type="submit">Sign Up</button>
     </form>
     <p>Already have an account? <a href="index.html">Sign In</a></p>
