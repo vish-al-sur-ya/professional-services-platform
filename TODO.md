@@ -24,8 +24,8 @@
 - [ ] Check responsiveness and form validations.
 
 ## Step 5: GitHub Integration
-- [ ] Commit changes to branch blackboxai/professional-services-platform.
-- [ ] Push and create PR to master (manual if gh not ready).
+- [x] Commit changes to branch blackboxai/professional-services-platform.
+- [x] Push and create PR to master (manual if gh not ready).
 - [ ] Enable GitHub Pages for live deployment.
 
 Progress will be updated as steps complete.
